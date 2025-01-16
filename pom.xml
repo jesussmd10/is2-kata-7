@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Información básica del proyecto -->
+    <groupId>kata7</groupId>
+    <artifactId>kata7</artifactId>
+    <version>1.0.0</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.main>Kata7.Main</project.main> <!-- Clase principal -->
+    </properties>
+
+    <dependencies>
+        <!-- Si en el futuro usas dependencias adicionales, se agregarían aquí -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin para crear el archivo JAR ejecutable -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase> <!-- En la fase de empaquetado -->
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${project.main}</mainClass> <!-- Clase principal -->
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Plugin para empaquetar la aplicación usando jpackage -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase> <!-- Ejecutar en la fase de empaquetado -->
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>jpackage</executable>
+                    <arguments>
+                        <argument>--input</argument>
+                        <argument>target/</argument>
+                        <argument>--name</argument>
+                        <argument>${project.artifactId}</argument> <!-- Nombre del instalador -->
+                        <argument>--main-jar</argument>
+                        <argument>${project.artifactId}-${project.version}.jar</argument> <!-- Archivo JAR -->
+                        <argument>--main-class</argument>
+                        <argument>${project.main}</argument> <!-- Clase principal -->
+                        <argument>--type</argument>
+                        <argument>exe</argument> <!-- Tipo de archivo (exe para Windows) -->
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
