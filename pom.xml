@@ -1,42 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Información básica del proyecto -->
-    <groupId>kata7</groupId>
-    <artifactId>kata7</artifactId>
-    <version>1.0.0</version>
+    <!-- Identificadores del proyecto -->
+    <groupId>kata7</groupId>  <!-- Este es el nombre del grupo (el paquete principal) -->
+    <artifactId>kata7</artifactId>  <!-- Este es el nombre del proyecto -->
+    <version>1.0-SNAPSHOT</version>  <!-- La versión de tu proyecto -->
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.main>Kata7.Main</project.main> <!-- Clase principal -->
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <!-- Si en el futuro usas dependencias adicionales, se agregarían aquí -->
-    </dependencies>
-
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
-            <!-- Plugin para crear el archivo JAR ejecutable -->
+            <!-- Maven Shade Plugin (para generar un jar ejecutable) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <phase>package</phase> <!-- En la fase de empaquetado -->
+                        <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${project.main}</mainClass> <!-- Clase principal -->
+                                    <!-- Nombre completo de la clase Main, con el paquete -->
+                                    <mainClass>kata7.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -44,14 +40,14 @@
                 </executions>
             </plugin>
 
-            <!-- Plugin para empaquetar la aplicación usando jpackage -->
+            <!-- JPackage Maven Plugin (para crear el instalador con jpackage) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase> <!-- Ejecutar en la fase de empaquetado -->
+                        <phase>install</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -60,19 +56,29 @@
                 <configuration>
                     <executable>jpackage</executable>
                     <arguments>
+                        <!-- Directorio de salida -->
                         <argument>--input</argument>
                         <argument>target/</argument>
+                        <!-- Nombre del instalador -->
                         <argument>--name</argument>
-                        <argument>${project.artifactId}</argument> <!-- Nombre del instalador -->
+                        <argument>${project.artifactId}</argument>
+                        <!-- JAR principal -->
                         <argument>--main-jar</argument>
-                        <argument>${project.artifactId}-${project.version}.jar</argument> <!-- Archivo JAR -->
+                        <argument>${project.artifactId}.jar</argument>
+                        <!-- Clase principal -->
                         <argument>--main-class</argument>
-                        <argument>${project.main}</argument> <!-- Clase principal -->
+                        <argument>kata7.Main</argument>
+                        <!-- Tipo de paquete (exe para Windows) -->
                         <argument>--type</argument>
-                        <argument>exe</argument> <!-- Tipo de archivo (exe para Windows) -->
+                        <argument>exe</argument>
+                        <!-- Icono del instalador (opcional) -->
+                        <argument>--icon</argument>
+                        <argument>vip_crown_queen_king_icon_264041.ico</argument> <!-- Reemplaza por el nombre de tu icono, si lo tienes -->
+                        <argument>--win-dir-chooser</argument>
                     </arguments>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>
